@@ -1,1316 +1,811 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Deadline Radar</title>
-
-    <style>
-        /* GENERAL PAGE STYLING */
-
-        * {
-            box-sizing: border-box;
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Deadline Radar — Make your next move</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: {
+            sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+            display: ['Manrope', 'Inter', 'ui-sans-serif', 'sans-serif']
+          },
+          colors: {
+            ink: '#17211F',
+            paper: '#F6F7F4',
+            forest: '#176B53',
+            lime: '#D8F36A',
+            muted: '#75817B'
+          },
+          boxShadow: {
+            soft: '0 12px 40px rgba(23, 33, 31, 0.06)'
+          }
         }
-
-        body {
-            margin: 0;
-            padding: 25px;
-            background: #11121d;
-            color: #f5f4fc;
-            font-family: Arial, sans-serif;
-        }
-
-        .container {
-            max-width: 1150px;
-            margin: auto;
-        }
-
-        /* HEADER */
-
-        header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            flex-wrap: wrap;
-            gap: 15px;
-            padding-bottom: 25px;
-            border-bottom: 1px solid #303247;
-        }
-
-        h1 {
-            margin: 0;
-            font-size: 27px;
-        }
-
-        h1 span {
-            color: #a58bff;
-        }
-
-        .subtitle {
-            color: #9295ad;
-            font-size: 13px;
-        }
-
-        .date {
-            color: #9295ad;
-            font-size: 13px;
-        }
-
-        /* MAIN INTRODUCTION */
-
-        .hero {
-            margin: 35px 0 25px;
-        }
-
-        .hero h2 {
-            font-size: 32px;
-            margin-bottom: 8px;
-        }
-
-        .hero p {
-            color: #9295ad;
-            font-size: 14px;
-        }
-
-        /* DASHBOARD STATISTICS */
-
-        .stats {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 15px;
-            margin-bottom: 18px;
-        }
-
-        .stat {
-            background: #1b1d2d;
-            border: 1px solid #303247;
-            border-radius: 12px;
-            padding: 20px;
-        }
-
-        .stat-title {
-            color: #9295ad;
-            font-size: 12px;
-        }
-
-        .stat-number {
-            font-size: 30px;
-            font-weight: bold;
-            margin-top: 12px;
-        }
-
-        .purple { color: #a58bff; }
-        .green { color: #63d9ad; }
-        .red { color: #ff788d; }
-        .yellow { color: #f4c879; }
-
-        /* GENERAL PANELS */
-
-        .panel {
-            background: #1b1d2d;
-            border: 1px solid #303247;
-            border-radius: 12px;
-            padding: 22px;
-            margin-bottom: 18px;
-        }
-
-        .panel h3 {
-            margin-top: 0;
-            font-size: 18px;
-        }
-
-        /* PROGRESS BAR */
-
-        .progress-header {
-            display: flex;
-            justify-content: space-between;
-            font-size: 13px;
-        }
-
-        .progress-track {
-            background: #303247;
-            height: 8px;
-            border-radius: 10px;
-            margin-top: 12px;
-            overflow: hidden;
-        }
-
-        .progress-fill {
-            background: linear-gradient(90deg, #7959e9, #b49aff);
-            height: 100%;
-            width: 0%;
-            transition: width 0.3s;
-        }
-
-        /* TWO-COLUMN LAYOUT */
-
-        .main {
-            display: grid;
-            grid-template-columns: 1.5fr 1fr;
-            gap: 18px;
-            align-items: start;
-        }
-
-        /* FORM */
-
-        .form-grid {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 12px;
-        }
-
-        label {
-            display: block;
-            color: #9295ad;
-            font-size: 11px;
-            margin-bottom: 7px;
-        }
-
-        input, select {
-            width: 100%;
-            padding: 11px;
-            background: #25283c;
-            border: 1px solid #393d55;
-            border-radius: 7px;
-            color: white;
-            outline: none;
-        }
-
-        input:focus, select:focus {
-            border-color: #a58bff;
-        }
-
-        button {
-            cursor: pointer;
-            border: none;
-            border-radius: 7px;
-            padding: 11px 15px;
-            font-weight: bold;
-        }
-
-        .add-button {
-            grid-column: 1 / -1;
-            background: #8969ed;
-            color: white;
-        }
-
-        .add-button:hover {
-            background: #a58bff;
-        }
-
-        /* SEARCH AND FILTER */
-
-        .filters {
-            display: flex;
-            gap: 10px;
-            margin: 20px 0 12px;
-        }
-
-        .filters input {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .filters select {
-            width: 125px;
-        }
-
-        /* ASSIGNMENT LIST */
-
-        .task {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            background: #25283c;
-            border: 1px solid #353950;
-            border-radius: 9px;
-            padding: 13px;
-            margin-top: 10px;
-        }
-
-        .task input[type="checkbox"] {
-            width: 18px;
-            height: 18px;
-            accent-color: #a58bff;
-            cursor: pointer;
-        }
-
-        .task-info {
-            flex: 1;
-            min-width: 0;
-        }
-
-        .task-name {
-            font-size: 13px;
-            font-weight: bold;
-            overflow-wrap: anywhere;
-        }
-
-        .task-details {
-            font-size: 11px;
-            color: #9295ad;
-            margin-top: 6px;
-        }
-
-        .task.done .task-name {
-            text-decoration: line-through;
-            color: #9295ad;
-        }
-
-        .priority {
-            display: inline-block;
-            padding: 4px 7px;
-            border-radius: 5px;
-            font-size: 10px;
-            margin-top: 6px;
-        }
-
-        .high {
-            color: #ff91a3;
-            background: #452b3b;
-        }
-
-        .medium {
-            color: #f4c879;
-            background: #403a2b;
-        }
-
-        .low {
-            color: #63d9ad;
-            background: #233c36;
-        }
-
-        .task-right {
-            text-align: right;
-        }
-
-        .due {
-            font-size: 10px;
-            margin-bottom: 8px;
-        }
-
-        .delete-button {
-            background: transparent;
-            color: #ff788d;
-            padding: 5px;
-        }
-
-        .empty {
-            color: #9295ad;
-            text-align: center;
-            padding: 25px 10px;
-            font-size: 13px;
-        }
-
-        /* FOCUS TIMER */
-
-        .timer-panel {
-            text-align: center;
-            background: radial-gradient(circle at top, #30284f, #1b1d2d 65%);
-        }
-
-        .timer-label {
-            color: #a58bff;
-            font-size: 11px;
-            letter-spacing: 2px;
-            font-weight: bold;
-        }
-
-        .timer {
-            font-size: 55px;
-            font-weight: bold;
-            margin: 22px 0;
-            font-variant-numeric: tabular-nums;
-        }
-
-        .timer-buttons {
-            display: flex;
-            justify-content: center;
-            flex-wrap: wrap;
-            gap: 8px;
-        }
-
-        .timer-buttons button {
-            background: #7959e9;
-            color: white;
-        }
-
-        .timer-buttons .secondary {
-            background: #303247;
-        }
-
-        .modes {
-            display: flex;
-            justify-content: center;
-            gap: 7px;
-            margin-top: 18px;
-            flex-wrap: wrap;
-        }
-
-        .mode-button {
-            background: #303247;
-            color: #b6b5c9;
-            font-size: 10px;
-        }
-
-        .mode-button.active {
-            background: #7959e9;
-            color: white;
-        }
-
-        /* RECOMMENDATION */
-
-        .recommendation {
-            background: #25283c;
-            padding: 15px;
-            border-radius: 9px;
-            font-size: 12px;
-            color: #c5c4d5;
-            line-height: 1.7;
-        }
-
-        .recommendation strong {
-            color: #a58bff;
-        }
-
-        footer {
-            color: #777b95;
-            text-align: center;
-            font-size: 11px;
-            margin-top: 30px;
-        }
-
-        /* MOBILE RESPONSIVENESS */
-
-        @media (max-width: 800px) {
-            .main {
-                grid-template-columns: 1fr;
-            }
-
-            .stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-        }
-
-        @media (max-width: 450px) {
-            body {
-                padding: 13px;
-            }
-
-            .form-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .stats {
-                grid-template-columns: repeat(2, 1fr);
-            }
-
-            .filters {
-                flex-wrap: wrap;
-            }
-
-            .filters input {
-                flex-basis: 100%;
-            }
-
-            .filters select {
-                flex: 1;
-            }
-
-            .hero h2 {
-                font-size: 25px;
-            }
-        }
-    </style>
+      }
+    }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    * { box-sizing: border-box; }
+    body { font-family: 'DM Sans', sans-serif; }
+    .display { font-family: 'Manrope', sans-serif; }
+    .mono { font-family: 'DM Mono', monospace; }
+    .task-row { animation: rise .25s ease both; }
+    @keyframes rise { from { opacity: 0; transform: translateY(7px); } to { opacity: 1; transform: translateY(0); } }
+    .bingo-cell { transition: transform .18s ease, background .18s ease, border-color .18s ease; }
+    .bingo-cell:hover { transform: translateY(-2px); }
+    .bingo-cell.marked { background: #EAF5E8; border-color: #8DBD9C; color: #176B53; }
+    .bingo-cell.marked .bingo-dot { background: #176B53; color: white; }
+    .bingo-cell.winning { outline: 2px solid #176B53; outline-offset: 2px; }
+    .progress-fill { transition: width .4s ease; }
+    .modal-backdrop { background: rgba(17, 28, 24, .48); backdrop-filter: blur(5px); }
+    button:focus-visible, input:focus-visible, select:focus-visible, textarea:focus-visible { outline: 3px solid rgba(23,107,83,.28); outline-offset: 2px; }
+    ::selection { background: #D8F36A; color: #17211F; }
+  </style>
 </head>
-
-<body>
-
-<div class="container">
-
-    <!-- HEADER -->
-
-    <header>
+<body class="bg-paper text-ink min-h-screen">
+  <div class="min-h-screen lg:grid lg:grid-cols-[244px_minmax(0,1fr)]">
+    <!-- Sidebar -->
+    <aside class="hidden lg:flex flex-col border-r border-[#E5E9E3] bg-white px-5 py-7">
+      <a href="#" class="flex items-center gap-3 px-2" aria-label="Deadline Radar home">
+        <div class="grid h-10 w-10 place-items-center rounded-xl bg-forest text-lime">
+          <svg viewBox="0 0 24 24" class="h-6 w-6" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v3M20.5 12h-3M12 20.5v-3M3.5 12h3M12 12l4-4"/></svg>
+        </div>
         <div>
-            <h1>DEADLINE <span>RADAR.</span></h1>
-            <div class="subtitle">Academic Command Center</div>
+          <div class="display text-[17px] font-extrabold tracking-tight">deadline<span class="text-forest">radar</span></div>
+          <div class="mono text-[9px] uppercase tracking-[.18em] text-muted">Student command center</div>
         </div>
+      </a>
 
-        <div class="date" id="today"></div>
-    </header>
+      <div class="mt-12">
+        <p class="mono mb-3 px-3 text-[10px] uppercase tracking-[.18em] text-[#9AA49E]">Workspace</p>
+        <nav class="space-y-1">
+          <a href="#overview" class="flex items-center gap-3 rounded-xl bg-[#EDF4EF] px-3 py-3 text-sm font-semibold text-forest">
+            <span>◫</span> Overview <span class="ml-auto h-1.5 w-1.5 rounded-full bg-forest"></span>
+          </a>
+          <a href="#assignments" class="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-[#66736C] transition hover:bg-paper hover:text-ink"><span>▤</span> Assignments</a>
+          <a href="#bingo" class="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-[#66736C] transition hover:bg-paper hover:text-ink"><span>▦</span> Deadline Bingo <span class="ml-auto rounded-md bg-lime px-1.5 py-0.5 text-[9px] font-bold text-ink">NEW</span></a>
+          <a href="#reality-check" class="flex items-center gap-3 rounded-xl px-3 py-3 text-sm font-medium text-[#66736C] transition hover:bg-paper hover:text-ink"><span>✳</span> AI Reality Check</a>
+        </nav>
+      </div>
 
-    <!-- INTRODUCTION -->
-
-    <section class="hero">
-        <h2>Make every deadline count.</h2>
-        <p>Organize your assignments, prioritize your work, and stay focused.</p>
-    </section>
-
-    <!-- DASHBOARD STATISTICS -->
-
-    <section class="stats">
-
-        <div class="stat">
-            <div class="stat-title">TOTAL ASSIGNMENTS</div>
-            <div class="stat-number purple" id="total">0</div>
+      <div class="mt-auto rounded-2xl bg-ink p-4 text-white">
+        <div class="flex items-center justify-between">
+          <span class="mono text-[9px] uppercase tracking-[.16em] text-[#A8B6AE]">A small reminder</span>
+          <span class="text-lime">✳</span>
         </div>
+        <p class="display mt-3 text-lg font-bold leading-snug">Progress beats perfect.</p>
+        <p class="mt-2 text-xs leading-relaxed text-[#B8C4BE]">One focused session is better than another hour of worrying about the list.</p>
+        <div class="mt-4 h-px bg-white/15"></div>
+        <p class="mono mt-3 text-[9px] text-[#9EACA4]">YOUR WORKSPACE · YOUR PACE</p>
+      </div>
+    </aside>
 
-        <div class="stat">
-            <div class="stat-title">COMPLETED</div>
-            <div class="stat-number green" id="completed">0</div>
+    <!-- Main -->
+    <main id="overview" class="mx-auto w-full max-w-[1500px] px-4 pb-12 pt-5 sm:px-7 lg:px-10 lg:pt-8">
+      <header class="flex flex-wrap items-center justify-between gap-4 border-b border-[#E5E9E3] pb-5">
+        <div class="flex items-center gap-3 lg:hidden">
+          <div class="grid h-9 w-9 place-items-center rounded-xl bg-forest text-lime">◎</div>
+          <div class="display font-extrabold tracking-tight">deadline<span class="text-forest">radar</span></div>
         </div>
-
-        <div class="stat">
-            <div class="stat-title">NEEDS ATTENTION</div>
-            <div class="stat-number red" id="urgent">0</div>
+        <div class="hidden lg:block">
+          <p class="mono text-[10px] uppercase tracking-[.18em] text-muted">Your academic workspace</p>
+          <p class="mt-1 text-sm font-medium text-[#65716B]">A clearer view of what matters next.</p>
         </div>
-
-        <div class="stat">
-            <div class="stat-title">HOURS REMAINING</div>
-            <div class="stat-number yellow" id="hours">0</div>
+        <div class="ml-auto flex items-center gap-3">
+          <span id="todayLabel" class="hidden text-xs font-medium text-muted sm:inline"></span>
+          <button id="quickAdd" class="inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2.5 text-xs font-semibold text-white shadow-sm transition hover:bg-forest">
+            <span class="text-lime text-base leading-none">+</span> Add assignment
+          </button>
+          <div class="grid h-9 w-9 place-items-center rounded-full border border-[#DDE3DC] bg-white text-xs font-bold text-forest">DR</div>
         </div>
+      </header>
 
-    </section>
-
-    <!-- PROGRESS -->
-
-    <section class="panel">
-
-        <div class="progress-header">
-            <strong>Overall Progress</strong>
-            <span id="progressText">0% complete</span>
-        </div>
-
-        <div class="progress-track">
-            <div class="progress-fill" id="progress"></div>
-        </div>
-
-    </section>
-
-    <div class="main">
-
-        <!-- ASSIGNMENT MANAGER -->
-
-        <section class="panel">
-
-            <h3>Assignment Manager</h3>
-
-            <form id="taskForm">
-
-                <div class="form-grid">
-
-                    <div>
-                        <label for="taskName">ASSIGNMENT NAME</label>
-                        <input type="text" id="taskName"
-                            placeholder="Research paper..." maxlength="100" required>
-                    </div>
-
-                    <div>
-                        <label for="course">COURSE</label>
-                        <input type="text" id="course"
-                            placeholder="Computer Science" maxlength="45">
-                    </div>
-
-                    <div>
-                        <label for="dueDate">DEADLINE</label>
-                        <input type="date" id="dueDate" required>
-                    </div>
-
-                    <div>
-                        <label for="priority">IMPORTANCE</label>
-                        <select id="priority">
-                            <option value="High">High</option>
-                            <option value="Medium" selected>Medium</option>
-                            <option value="Low">Low</option>
-                        </select>
-                    </div>
-
-                    <div>
-                        <label for="estimate">ESTIMATED TIME (MINUTES)</label>
-                        <input type="number" id="estimate"
-                            value="60" min="5" max="10000" required>
-                    </div>
-
-                    <button class="add-button" type="submit">
-                        + Add Assignment
-                    </button>
-
-                </div>
-
-            </form>
-
-            <!-- SEARCH AND FILTER -->
-
-            <div class="filters">
-
-                <input type="search" id="search"
-                    placeholder="Search assignments...">
-
-                <select id="filter">
-                    <option value="All">All tasks</option>
-                    <option value="Active">Active</option>
-                    <option value="Completed">Completed</option>
-                    <option value="Urgent">Urgent</option>
-                </select>
-
+      <section class="grid gap-6 pb-8 pt-8 xl:grid-cols-[minmax(0,1.55fr)_minmax(300px,.8fr)]">
+        <div>
+          <div class="mono text-[10px] uppercase tracking-[.2em] text-forest">Thursday / your daily briefing</div>
+          <h1 class="display mt-3 max-w-3xl text-[34px] font-extrabold leading-[1.08] tracking-[-.045em] sm:text-[46px]">Make your next move<br class="hidden sm:block"> <span class="text-forest">the right one.</span></h1>
+          <p class="mt-4 max-w-xl text-sm leading-6 text-[#6D7972]">A calm place to see your deadlines, choose your next task, and make steady progress without the noise.</p>
+          <div class="mt-7 grid grid-cols-2 gap-3 sm:grid-cols-4">
+            <div class="rounded-2xl border border-[#E5E9E3] bg-white p-4 shadow-soft">
+              <div class="mono text-[9px] uppercase tracking-[.15em] text-muted">On your radar</div>
+              <div id="totalCount" class="display mt-2 text-3xl font-extrabold tracking-tight">0</div>
+              <div class="mt-1 text-[11px] text-muted">Total assignments</div>
             </div>
+            <div class="rounded-2xl border border-[#E5E9E3] bg-white p-4 shadow-soft">
+              <div class="mono text-[9px] uppercase tracking-[.15em] text-muted">Completed</div>
+              <div id="doneCount" class="display mt-2 text-3xl font-extrabold tracking-tight text-forest">0</div>
+              <div class="mt-1 text-[11px] text-muted">Wins so far</div>
+            </div>
+            <div class="rounded-2xl border border-[#E5E9E3] bg-white p-4 shadow-soft">
+              <div class="mono text-[9px] uppercase tracking-[.15em] text-muted">Due soon</div>
+              <div id="urgentCount" class="display mt-2 text-3xl font-extrabold tracking-tight text-[#B76A3E]">0</div>
+              <div class="mt-1 text-[11px] text-muted">Within 48 hours</div>
+            </div>
+            <div class="rounded-2xl border border-[#E5E9E3] bg-white p-4 shadow-soft">
+              <div class="mono text-[9px] uppercase tracking-[.15em] text-muted">Time left</div>
+              <div id="hoursCount" class="display mt-2 text-3xl font-extrabold tracking-tight">0<span class="ml-1 text-base font-semibold">h</span></div>
+              <div class="mt-1 text-[11px] text-muted">Estimated workload</div>
+            </div>
+          </div>
+        </div>
 
-            <div id="taskList"></div>
+        <div class="relative overflow-hidden rounded-[26px] bg-ink p-6 text-white shadow-soft sm:p-7">
+          <div class="absolute -right-12 -top-14 h-48 w-48 rounded-full border border-white/10"></div>
+          <div class="absolute -right-4 -top-6 h-32 w-32 rounded-full border border-white/10"></div>
+          <div class="relative">
+            <div class="flex items-center justify-between">
+              <span class="mono text-[9px] uppercase tracking-[.2em] text-[#AEBBB3]">Radar recommendation</span>
+              <span class="rounded-full border border-lime/30 bg-lime/10 px-2.5 py-1 text-[9px] font-bold uppercase tracking-wider text-lime">Live insight</span>
+            </div>
+            <div class="mt-8 flex items-center gap-2 text-lime"><span class="text-xl">✳</span><span class="mono text-[10px] uppercase tracking-[.16em]">Your next best move</span></div>
+            <h2 id="nextTaskTitle" class="display mt-3 text-2xl font-bold leading-tight">Your next move starts here.</h2>
+            <p id="nextTaskReason" class="mt-2 max-w-sm text-xs leading-5 text-[#B7C3BC]">Add an assignment and Radar will help you decide where to begin.</p>
+            <button id="focusNext" class="mt-6 inline-flex items-center gap-2 rounded-full bg-lime px-4 py-2.5 text-xs font-bold text-ink transition hover:bg-white">Start a focus session <span>↗</span></button>
+          </div>
+        </div>
+      </section>
 
+      <section class="mb-7 rounded-2xl border border-[#E3E9E1] bg-white px-5 py-4 shadow-soft sm:px-6">
+        <div class="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <p class="mono text-[9px] uppercase tracking-[.17em] text-muted">Momentum meter</p>
+            <p class="mt-1 text-sm font-semibold"><span id="progressText">0% complete</span> <span class="font-normal text-muted">— keep the momentum going.</span></p>
+          </div>
+          <p id="progressNumbers" class="mono text-[10px] text-muted">0 / 0 done</p>
+        </div>
+        <div class="mt-3 h-2 overflow-hidden rounded-full bg-[#EDF0EB]"><div id="progressBar" class="progress-fill h-full rounded-full bg-forest" style="width:0%"></div></div>
+      </section>
+
+      <div class="grid items-start gap-7 xl:grid-cols-[minmax(0,1.45fr)_minmax(330px,.8fr)]">
+        <!-- Assignments -->
+        <section id="assignments" class="min-w-0">
+          <div class="flex flex-wrap items-end justify-between gap-3">
+            <div>
+              <p class="mono text-[9px] uppercase tracking-[.18em] text-forest">01 / The work</p>
+              <h2 class="display mt-1 text-2xl font-extrabold tracking-tight">Your assignments</h2>
+              <p class="mt-1 text-xs text-muted">Everything in one place. Prioritized by urgency and importance.</p>
+            </div>
+            <button id="addAssignment" class="rounded-full border border-[#DDE4DC] bg-white px-4 py-2 text-xs font-semibold transition hover:border-forest hover:text-forest">+ New task</button>
+          </div>
+
+          <div class="mt-5 flex flex-col gap-3 sm:flex-row">
+            <div class="relative flex-1">
+              <span class="absolute left-3.5 top-1/2 -translate-y-1/2 text-muted">⌕</span>
+              <input id="searchInput" type="search" placeholder="Find an assignment..." class="w-full rounded-xl border border-[#E1E7E0] bg-white py-3 pl-10 pr-4 text-xs outline-none transition placeholder:text-[#A0AAA3] focus:border-forest">
+            </div>
+            <select id="filterSelect" class="rounded-xl border border-[#E1E7E0] bg-white px-4 py-3 text-xs font-medium text-[#66736C] outline-none focus:border-forest">
+              <option value="all">All assignments</option>
+              <option value="active">Still working on</option>
+              <option value="urgent">Due within 48 hours</option>
+              <option value="completed">Completed</option>
+            </select>
+          </div>
+
+          <div id="taskList" class="mt-4 space-y-2.5"></div>
+          <div id="emptyState" class="mt-4 hidden rounded-2xl border border-dashed border-[#CFD8CF] bg-white/60 px-5 py-12 text-center">
+            <div class="mx-auto grid h-12 w-12 place-items-center rounded-2xl bg-[#EAF2E9] text-xl text-forest">✓</div>
+            <p class="display mt-4 font-bold">Nothing on this radar.</p>
+            <p class="mt-1 text-xs text-muted">Add an assignment or change your filters.</p>
+          </div>
         </section>
 
-        <!-- FOCUS TIMER AND RECOMMENDATION -->
+        <!-- Right rail -->
+        <div class="space-y-7">
+          <section id="bingo" class="rounded-[24px] border border-[#E2E8E0] bg-white p-5 shadow-soft sm:p-6">
+            <div class="flex items-start justify-between gap-3">
+              <div>
+                <p class="mono text-[9px] uppercase tracking-[.18em] text-forest">02 / The unexpected</p>
+                <h2 class="display mt-1 text-xl font-extrabold tracking-tight">Deadline Bingo</h2>
+                <p class="mt-1 max-w-xs text-[11px] leading-5 text-muted">Your study habits, turned into a game. Complete a line to win.</p>
+              </div>
+              <div class="grid h-10 w-10 place-items-center rounded-xl bg-[#F0F5E9] text-xl">▦</div>
+            </div>
+            <div class="mt-5 flex items-center justify-between">
+              <span class="mono text-[9px] uppercase tracking-[.14em] text-muted">Your weekly card</span>
+              <span id="bingoProgress" class="rounded-full bg-[#F1F4EF] px-2.5 py-1 text-[10px] font-bold text-forest">0 / 9</span>
+            </div>
+            <div id="bingoGrid" class="mt-3 grid grid-cols-3 gap-2"></div>
+            <div id="bingoMessage" class="mt-4 rounded-xl bg-[#F3F6F0] px-3.5 py-3 text-[11px] leading-5 text-[#52635A]">A full row, column, or diagonal earns a Bingo. You’ve got this.</div>
+            <button id="resetBingo" class="mt-3 text-[10px] font-semibold text-muted underline decoration-[#CBD4CA] underline-offset-4 hover:text-forest">Reset this card</button>
+          </section>
 
-        <aside>
+          <section id="reality-check" class="overflow-hidden rounded-[24px] border border-[#E2E8E0] bg-white shadow-soft">
+            <div class="bg-[#EAF1E9] px-5 pb-5 pt-5 sm:px-6">
+              <div class="flex items-center justify-between">
+                <p class="mono text-[9px] uppercase tracking-[.18em] text-forest">03 / The reality check</p>
+                <span class="rounded-full bg-white/80 px-2.5 py-1 text-[9px] font-bold text-forest">Writing tool</span>
+              </div>
+              <h2 class="display mt-3 text-xl font-extrabold tracking-tight">Does this sound like you?</h2>
+              <p class="mt-2 text-xs leading-5 text-[#627168]">Paste a paragraph for a quick review of generic phrasing, repetitive language, and opportunities to add your own voice.</p>
+            </div>
+            <div class="p-5 sm:p-6">
+              <label for="writingInput" class="mono text-[9px] uppercase tracking-[.15em] text-muted">Your writing sample</label>
+              <textarea id="writingInput" rows="5" placeholder="Paste a paragraph from your draft here..." class="mt-2 w-full resize-y rounded-xl border border-[#E1E7E0] bg-[#FBFCFA] p-3.5 text-xs leading-5 outline-none transition placeholder:text-[#A0AAA3] focus:border-forest"></textarea>
+              <div class="mt-2 flex items-center justify-between">
+                <span id="wordCount" class="mono text-[9px] text-muted">0 words</span>
+                <span class="text-[9px] text-muted">Your text stays in this browser.</span>
+              </div>
+              <button id="checkWriting" class="mt-4 flex w-full items-center justify-center gap-2 rounded-xl bg-forest px-4 py-3 text-xs font-bold text-white transition hover:bg-[#105640]">✳ Check my writing <span>↗</span></button>
+              <div id="writingResult" class="mt-4 hidden rounded-xl border border-[#E0E8DE] bg-[#F8FAF6] p-4" aria-live="polite"></div>
+              <p class="mt-3 text-[9px] leading-4 text-muted">Important: This is not an AI detector. No tool can reliably determine authorship from text alone. Use this as a writing-quality check, not proof that something was or wasn’t written by AI.</p>
+            </div>
+          </section>
+        </div>
+      </div>
 
-            <section class="panel timer-panel">
+      <!-- Focus timer -->
+      <section class="mt-8 grid gap-5 rounded-[24px] bg-[#E7EEE6] p-5 sm:grid-cols-[1fr_auto] sm:items-center sm:p-7">
+        <div>
+          <p class="mono text-[9px] uppercase tracking-[.18em] text-forest">04 / Protect your attention</p>
+          <h2 class="display mt-1 text-xl font-extrabold tracking-tight">A little focus goes a long way.</h2>
+          <p class="mt-1 text-xs text-[#68766D]">Choose a session, put the distractions away, and start.</p>
+          <div class="mt-4 flex flex-wrap gap-2">
+            <button class="timer-mode rounded-full bg-forest px-3 py-2 text-[10px] font-bold text-white" data-minutes="25" data-mode="Focus">Focus · 25 min</button>
+            <button class="timer-mode rounded-full border border-[#C9D5C8] bg-white/70 px-3 py-2 text-[10px] font-semibold text-[#5E6C63]" data-minutes="5" data-mode="Short break">Short break · 5 min</button>
+            <button class="timer-mode rounded-full border border-[#C9D5C8] bg-white/70 px-3 py-2 text-[10px] font-semibold text-[#5E6C63]" data-minutes="15" data-mode="Long break">Long break · 15 min</button>
+          </div>
+        </div>
+        <div class="flex items-center gap-5 sm:pr-3">
+          <div>
+            <p id="timerMode" class="mono text-[9px] uppercase tracking-[.16em] text-forest">Focus session</p>
+            <div id="timerDisplay" class="display mt-1 text-4xl font-extrabold tracking-[-.05em] tabular-nums">25:00</div>
+          </div>
+          <button id="timerButton" class="grid h-12 w-12 place-items-center rounded-full bg-ink text-xl text-white shadow-lg transition hover:scale-105" aria-label="Start timer">▶</button>
+          <button id="timerReset" class="text-[11px] font-semibold text-[#637168] underline underline-offset-4">Reset</button>
+        </div>
+      </section>
 
-                <h3>Focus Studio</h3>
+      <footer class="mt-9 flex flex-wrap items-center justify-between gap-2 border-t border-[#E2E8E0] pt-5 text-[10px] text-muted">
+        <span class="mono uppercase tracking-[.14em]">Deadline Radar · Built for the next move</span>
+        <span>Small steps. Clear priorities. Better days.</span>
+      </footer>
+    </main>
+  </div>
 
-                <div class="timer-label" id="timerLabel">
-                    FOCUS SESSION
-                </div>
-
-                <div class="timer" id="timer">25:00</div>
-
-                <div class="timer-buttons">
-                    <button id="start">Start</button>
-                    <button class="secondary" id="pause">Pause</button>
-                    <button class="secondary" id="reset">Reset</button>
-                </div>
-
-                <div class="modes">
-
-                    <button class="mode-button active"
-                        data-time="25" data-name="FOCUS SESSION">
-                        Focus 25m
-                    </button>
-
-                    <button class="mode-button"
-                        data-time="5" data-name="SHORT BREAK">
-                        Break 5m
-                    </button>
-
-                    <button class="mode-button"
-                        data-time="15" data-name="LONG BREAK">
-                        Break 15m
-                    </button>
-
-                </div>
-
-            </section>
-
-            <section class="panel">
-
-                <h3>Radar Intelligence</h3>
-
-                <div class="recommendation">
-                    <strong>NEXT BEST ACTION</strong>
-                    <p id="recommendation">
-                        Add an assignment to receive your first recommendation.
-                    </p>
-                </div>
-
-                <p class="subtitle">
-                    Deadline Radar automatically ranks your assignments
-                    using their deadlines and importance.
-                </p>
-
-            </section>
-
-        </aside>
-
+  <!-- Add assignment modal -->
+  <div id="taskModal" class="modal-backdrop fixed inset-0 z-50 hidden items-center justify-center p-4">
+    <div class="w-full max-w-md rounded-[24px] bg-white p-6 shadow-2xl sm:p-7" role="dialog" aria-modal="true" aria-labelledby="modalTitle">
+      <div class="flex items-start justify-between">
+        <div>
+          <p class="mono text-[9px] uppercase tracking-[.18em] text-forest">Add to your radar</p>
+          <h2 id="modalTitle" class="display mt-1 text-2xl font-extrabold tracking-tight">New assignment</h2>
+        </div>
+        <button id="closeModal" class="grid h-8 w-8 place-items-center rounded-full bg-paper text-muted hover:text-ink" aria-label="Close">✕</button>
+      </div>
+      <form id="taskForm" class="mt-6 space-y-4">
+        <div>
+          <label for="taskName" class="mb-1.5 block text-[11px] font-semibold">Assignment name</label>
+          <input id="taskName" required maxlength="80" placeholder="e.g. Marketing research report" class="w-full rounded-xl border border-[#DDE5DC] px-3.5 py-3 text-xs outline-none focus:border-forest">
+        </div>
+        <div>
+          <label for="taskCourse" class="mb-1.5 block text-[11px] font-semibold">Course / category</label>
+          <input id="taskCourse" maxlength="40" placeholder="e.g. MKT 315" class="w-full rounded-xl border border-[#DDE5DC] px-3.5 py-3 text-xs outline-none focus:border-forest">
+        </div>
+        <div class="grid grid-cols-2 gap-3">
+          <div>
+            <label for="taskDate" class="mb-1.5 block text-[11px] font-semibold">Due date</label>
+            <input id="taskDate" type="date" required class="w-full rounded-xl border border-[#DDE5DC] px-3 py-3 text-xs outline-none focus:border-forest">
+          </div>
+          <div>
+            <label for="taskPriority" class="mb-1.5 block text-[11px] font-semibold">Importance</label>
+            <select id="taskPriority" class="w-full rounded-xl border border-[#DDE5DC] bg-white px-3 py-3 text-xs outline-none focus:border-forest">
+              <option value="High">High</option><option value="Medium" selected>Medium</option><option value="Low">Low</option>
+            </select>
+          </div>
+        </div>
+        <div>
+          <label for="taskMinutes" class="mb-1.5 block text-[11px] font-semibold">Estimated time (minutes)</label>
+          <input id="taskMinutes" type="number" min="5" max="2000" value="60" required class="w-full rounded-xl border border-[#DDE5DC] px-3.5 py-3 text-xs outline-none focus:border-forest">
+        </div>
+        <p id="formError" class="hidden text-[11px] font-medium text-red-600"></p>
+        <div class="flex gap-2 pt-1">
+          <button type="button" id="cancelModal" class="flex-1 rounded-xl border border-[#DDE5DC] px-4 py-3 text-xs font-semibold text-[#65716B] hover:bg-paper">Cancel</button>
+          <button type="submit" class="flex-1 rounded-xl bg-forest px-4 py-3 text-xs font-bold text-white hover:bg-[#105640]">Save assignment</button>
+        </div>
+      </form>
     </div>
+  </div>
 
-    <footer>
-        DEADLINE RADAR · PLAN SMARTER. FOCUS DEEPER.
-    </footer>
+  <div id="toast" class="fixed bottom-5 left-1/2 z-[60] hidden -translate-x-1/2 rounded-full bg-ink px-5 py-3 text-xs font-semibold text-white shadow-xl" role="status"></div>
 
-</div>
+  <script>
+    // -----------------------------
+    // Deadline Radar: beginner-friendly app logic
+    // -----------------------------
 
-<script>
-
-    // =====================================
-    // 1. APPLICATION DATA
-    // =====================================
-
-    // This array stores all of our assignments.
-
+    // Get saved assignments from this browser.
     let tasks = [];
-
-    // Load previously saved assignments.
-
     try {
-        const savedTasks = JSON.parse(
-            localStorage.getItem("deadlineRadarTasks")
-        );
-
-        if (Array.isArray(savedTasks)) {
-            tasks = savedTasks.filter(task =>
-                task &&
-                typeof task.id === "number" &&
-                typeof task.name === "string" &&
-                typeof task.course === "string" &&
-                typeof task.date === "string" &&
-                getDaysLeft(task.date) !== null &&
-                ["High", "Medium", "Low"].includes(task.priority) &&
-                Number.isInteger(task.minutes) &&
-                task.minutes >= 5 &&
-                task.minutes <= 10000 &&
-                typeof task.done === "boolean"
-            );
-        }
-
+      tasks = JSON.parse(localStorage.getItem("deadlineRadarTasks")) || [];
+      if (!Array.isArray(tasks)) tasks = [];
     } catch (error) {
-        tasks = [];
+      tasks = [];
     }
 
-
-    // =====================================
-    // 2. SAVE ASSIGNMENTS
-    // =====================================
-
-    function saveTasks() {
-
-        localStorage.setItem(
-            "deadlineRadarTasks",
-            JSON.stringify(tasks)
-        );
-
-    }
-
-
-    // =====================================
-    // 3. DATE CALCULATIONS
-    // =====================================
-
-    function getDaysLeft(dateString) {
-
-        const parts = dateString.split("-");
-
-        if (parts.length !== 3) {
-            return null;
-        }
-
-        const year = Number(parts[0]);
-        const month = Number(parts[1]);
-        const day = Number(parts[2]);
-
-        const dueDate = new Date(year, month - 1, day);
-
-        if (
-            dueDate.getFullYear() !== year ||
-            dueDate.getMonth() !== month - 1 ||
-            dueDate.getDate() !== day
-        ) {
-            return null;
-        }
-
-        const today = new Date();
-
-        const todayNumber = Date.UTC(
-            today.getFullYear(),
-            today.getMonth(),
-            today.getDate()
-        );
-
-        const dueNumber = Date.UTC(year, month - 1, day);
-
-        return Math.round(
-            (dueNumber - todayNumber) / 86400000
-        );
-
-    }
-
-
-    function getDeadlineText(date) {
-
-        const days = getDaysLeft(date);
-
-        if (days < 0) {
-            return Math.abs(days) + " days overdue";
-        }
-
-        if (days === 0) {
-            return "Due today";
-        }
-
-        if (days === 1) {
-            return "Due tomorrow";
-        }
-
-        return "Due in " + days + " days";
-
-    }
-
-
-    // =====================================
-    // 4. PRIORITY CALCULATION
-    // =====================================
-
-    function getScore(task) {
-
-        const days = getDaysLeft(task.date);
-
-        let urgency = 10;
-
-        if (days < 0) {
-            urgency = 100;
-        } else if (days === 0) {
-            urgency = 90;
-        } else if (days === 1) {
-            urgency = 80;
-        } else if (days <= 3) {
-            urgency = 65;
-        } else if (days <= 7) {
-            urgency = 45;
-        } else if (days <= 14) {
-            urgency = 25;
-        }
-
-        let importance = 10;
-
-        if (task.priority === "High") {
-            importance = 30;
-        } else if (task.priority === "Medium") {
-            importance = 20;
-        }
-
-        return urgency + importance;
-
-    }
-
-
-    // =====================================
-    // 5. UPDATE DASHBOARD
-    // =====================================
-
-    function render() {
-
-        let completed = 0;
-        let urgent = 0;
-        let remainingMinutes = 0;
-
-        // Count completed assignments and calculate workload.
-
-        for (let i = 0; i < tasks.length; i++) {
-
-            if (tasks[i].done) {
-                completed++;
-            } else {
-
-                remainingMinutes += tasks[i].minutes;
-
-                if (getDaysLeft(tasks[i].date) <= 2) {
-                    urgent++;
-                }
-
-            }
-
-        }
-
-        const total = tasks.length;
-
-        let percentage = 0;
-
-        if (total > 0) {
-            percentage = Math.round((completed / total) * 100);
-        }
-
-        // Update dashboard numbers.
-
-        document.getElementById("total").textContent = total;
-
-        document.getElementById("completed").textContent =
-            completed;
-
-        document.getElementById("urgent").textContent = urgent;
-
-        document.getElementById("hours").textContent =
-            (remainingMinutes / 60).toFixed(1);
-
-        document.getElementById("progressText").textContent =
-            percentage + "% complete";
-
-        document.getElementById("progress").style.width =
-            percentage + "%";
-
-        // Update the assignment list and recommendation.
-
-        renderTasks();
-        renderRecommendation();
-
-    }
-
-
-    // =====================================
-    // 6. DISPLAY ASSIGNMENTS
-    // =====================================
-
-    function renderTasks() {
-
-        const list = document.getElementById("taskList");
-
-        list.replaceChildren();
-
-        const search = document.getElementById("search")
-            .value.toLowerCase();
-
-        const filter = document.getElementById("filter").value;
-
-        // Create a separate array for displayed assignments.
-
-        let visibleTasks = [];
-
-        for (let i = 0; i < tasks.length; i++) {
-
-            const task = tasks[i];
-
-            // Search assignment names and courses.
-
-            const matchesSearch =
-                task.name.toLowerCase().includes(search) ||
-                task.course.toLowerCase().includes(search);
-
-            if (!matchesSearch) {
-                continue;
-            }
-
-            // Apply the selected filter.
-
-            if (filter === "Active" && task.done) {
-                continue;
-            }
-
-            if (filter === "Completed" && !task.done) {
-                continue;
-            }
-
-            if (filter === "Urgent" &&
-                (task.done || getDaysLeft(task.date) > 2)) {
-                continue;
-            }
-
-            visibleTasks.push(task);
-
-        }
-
-        // Sort assignments using their priority scores.
-
-        visibleTasks.sort(function(a, b) {
-
-            if (a.done !== b.done) {
-                return Number(a.done) - Number(b.done);
-            }
-
-            return getScore(b) - getScore(a);
-
-        });
-
-        // Display a message if there are no assignments.
-
-        if (visibleTasks.length === 0) {
-
-            const message = document.createElement("div");
-
-            message.className = "empty";
-
-            message.textContent = tasks.length === 0
-                ? "No assignments yet. Add your first assignment above!"
-                : "No assignments match your search.";
-
-            list.appendChild(message);
-
-            return;
-
-        }
-
-        // Create an HTML element for each assignment.
-
-        for (let i = 0; i < visibleTasks.length; i++) {
-
-            const task = visibleTasks[i];
-
-            const item = document.createElement("div");
-
-            item.className = "task";
-
-            if (task.done) {
-                item.classList.add("done");
-            }
-
-            // Checkbox for completing assignments.
-
-            const checkbox = document.createElement("input");
-
-            checkbox.type = "checkbox";
-            checkbox.checked = task.done;
-            checkbox.setAttribute("aria-label", "Complete " + task.name);
-
-            checkbox.addEventListener("change", function() {
-
-                task.done = checkbox.checked;
-
-                saveTasks();
-                render();
-
-            });
-
-            // Assignment information.
-
-            const info = document.createElement("div");
-
-            info.className = "task-info";
-
-            const name = document.createElement("div");
-
-            name.className = "task-name";
-            name.textContent = task.name;
-
-            const details = document.createElement("div");
-
-            details.className = "task-details";
-
-            details.textContent =
-                (task.course || "General") +
-                " · " + task.minutes + " min";
-
-            const priority = document.createElement("span");
-
-            priority.className =
-                "priority " + task.priority.toLowerCase();
-
-            priority.textContent = task.priority;
-
-            info.appendChild(name);
-            info.appendChild(details);
-            info.appendChild(priority);
-
-            // Deadline and delete button.
-
-            const right = document.createElement("div");
-
-            right.className = "task-right";
-
-            const due = document.createElement("div");
-
-            due.className = "due";
-            due.textContent = getDeadlineText(task.date);
-
-            if (!task.done && getDaysLeft(task.date) < 0) {
-                due.style.color = "#ff788d";
-            } else if (!task.done && getDaysLeft(task.date) <= 2) {
-                due.style.color = "#f4c879";
-            }
-
-            const deleteButton = document.createElement("button");
-
-            deleteButton.className = "delete-button";
-            deleteButton.textContent = "Delete";
-
-            deleteButton.addEventListener("click", function() {
-
-                if (confirm("Delete this assignment?")) {
-
-                    tasks = tasks.filter(function(t) {
-                        return t.id !== task.id;
-                    });
-
-                    saveTasks();
-                    render();
-
-                }
-
-            });
-
-            right.appendChild(due);
-            right.appendChild(deleteButton);
-
-            // Put everything together.
-
-            item.appendChild(checkbox);
-            item.appendChild(info);
-            item.appendChild(right);
-
-            list.appendChild(item);
-
-        }
-
-    }
-
-
-    // =====================================
-    // 7. ADD A NEW ASSIGNMENT
-    // =====================================
-
-    document.getElementById("taskForm")
-        .addEventListener("submit", function(event) {
-
-            event.preventDefault();
-
-            const name = document.getElementById("taskName")
-                .value.trim();
-
-            const course = document.getElementById("course")
-                .value.trim();
-
-            const date = document.getElementById("dueDate").value;
-
-            const priority = document.getElementById("priority").value;
-
-            const minutes = Number(
-                document.getElementById("estimate").value
-            );
-
-            if (!name || getDaysLeft(date) === null) {
-                alert("Please enter a valid assignment and deadline.");
-                return;
-            }
-
-            if (
-                !Number.isInteger(minutes) ||
-                minutes < 5 ||
-                minutes > 10000
-            ) {
-                alert("Please enter an estimate between 5 and 10,000 minutes.");
-                return;
-            }
-
-            // Ask before adding an overdue assignment.
-
-            if (getDaysLeft(date) < 0) {
-
-                if (!confirm("This deadline is in the past. Add it anyway?")) {
-                    return;
-                }
-
-            }
-
-            // Create a new assignment object.
-
-            const newTask = {
-
-                id: Date.now(),
-
-                name: name,
-
-                course: course,
-
-                date: date,
-
-                priority: priority,
-
-                minutes: minutes,
-
-                done: false
-
-            };
-
-            tasks.push(newTask);
-
-            saveTasks();
-
-            // Clear the form.
-
-            document.getElementById("taskForm").reset();
-
-            document.getElementById("priority").value = "Medium";
-
-            document.getElementById("estimate").value = 60;
-
-            render();
-
-        });
-
-
-    // =====================================
-    // 8. SEARCH AND FILTER
-    // =====================================
-
-    document.getElementById("search")
-        .addEventListener("input", renderTasks);
-
-    document.getElementById("filter")
-        .addEventListener("change", renderTasks);
-
-
-    // =====================================
-    // 9. SMART RECOMMENDATION
-    // =====================================
-
-    function renderRecommendation() {
-
-        const activeTasks = tasks.filter(function(task) {
-            return !task.done;
-        });
-
-        activeTasks.sort(function(a, b) {
-            return getScore(b) - getScore(a);
-        });
-
-        const output = document.getElementById("recommendation");
-
-        if (activeTasks.length === 0) {
-
-            output.textContent = tasks.length === 0
-                ? "Add an assignment to receive your first recommendation."
-                : "All assignments completed! Great work.";
-
-            return;
-
-        }
-
-        const nextTask = activeTasks[0];
-
-        output.textContent =
-            'Your next priority is "' + nextTask.name +
-            '". It is ' + getDeadlineText(nextTask.date) +
-            ' and has ' + nextTask.priority.toLowerCase() +
-            ' importance. Estimated work: ' + nextTask.minutes + ' minutes.';
-
-    }
-
-
-    // =====================================
-    // 10. FOCUS TIMER
-    // =====================================
-
-    let remainingSeconds = 25 * 60;
-
-    let timerInterval = null;
-
-    let timerMode = "FOCUS SESSION";
-
-    function displayTimer() {
-
-        const minutes = Math.floor(remainingSeconds / 60);
-
-        const seconds = remainingSeconds % 60;
-
-        document.getElementById("timer").textContent =
-
-            String(minutes).padStart(2, "0") + ":" +
-
-            String(seconds).padStart(2, "0");
-
-    }
-
-    // Start the timer.
-
-    document.getElementById("start")
-        .addEventListener("click", function() {
-
-            if (timerInterval !== null || remainingSeconds <= 0) {
-                return;
-            }
-
-            timerInterval = setInterval(function() {
-
-                remainingSeconds--;
-
-                displayTimer();
-
-                if (remainingSeconds <= 0) {
-
-                    clearInterval(timerInterval);
-
-                    timerInterval = null;
-
-                    alert(timerMode + " complete!");
-
-                }
-
-            }, 1000);
-
-        });
-
-
-    // Pause the timer.
-
-    document.getElementById("pause")
-        .addEventListener("click", function() {
-
-            clearInterval(timerInterval);
-
-            timerInterval = null;
-
-        });
-
-
-    // Reset the timer.
-
-    document.getElementById("reset")
-        .addEventListener("click", function() {
-
-            clearInterval(timerInterval);
-
-            timerInterval = null;
-
-            if (timerMode === "FOCUS SESSION") {
-                remainingSeconds = 25 * 60;
-            } else if (timerMode === "SHORT BREAK") {
-                remainingSeconds = 5 * 60;
-            } else {
-                remainingSeconds = 15 * 60;
-            }
-
-            displayTimer();
-
-        });
-
-
-    // Switch between timer modes.
-
-    const modeButtons = document.querySelectorAll(".mode-button");
-
-    modeButtons.forEach(function(button) {
-
-        button.addEventListener("click", function() {
-
-            clearInterval(timerInterval);
-
-            timerInterval = null;
-
-            const minutes = Number(button.dataset.time);
-
-            timerMode = button.dataset.name;
-
-            remainingSeconds = minutes * 60;
-
-            modeButtons.forEach(function(otherButton) {
-                otherButton.classList.remove("active");
-            });
-
-            button.classList.add("active");
-
-            document.getElementById("timerLabel").textContent =
-                timerMode;
-
-            displayTimer();
-
-        });
-
+    // Keep only valid saved tasks.
+    tasks = tasks.filter(function(task) {
+      return task && task.name && task.date && !isNaN(new Date(task.date).getTime());
+    }).map(function(task) {
+      return {
+        id: task.id || Date.now() + Math.random(),
+        name: String(task.name),
+        course: String(task.course || ""),
+        date: task.date,
+        priority: ["High", "Medium", "Low"].includes(task.priority) ? task.priority : "Medium",
+        minutes: Math.max(5, Number(task.minutes) || 60),
+        done: Boolean(task.done)
+      };
     });
 
+    const bingoChallenges = [
+      "Start before noon", "Finish a task", "Study for 25 min",
+      "Review your notes", "Take a real break", "Plan tomorrow",
+      "Submit something early", "Clear one small task", "Ask a good question"
+    ];
 
-    // =====================================
-    // 11. INITIALIZE THE APPLICATION
-    // =====================================
+    let bingoMarks = [];
+    try {
+      bingoMarks = JSON.parse(localStorage.getItem("deadlineRadarBingo")) || [];
+      if (!Array.isArray(bingoMarks)) bingoMarks = [];
+    } catch (error) {
+      bingoMarks = [];
+    }
+    while (bingoMarks.length < 9) bingoMarks.push(false);
+    bingoMarks = bingoMarks.slice(0, 9);
 
-    document.getElementById("today").textContent =
-        new Date().toLocaleDateString("en-US", {
-            weekday: "long",
-            month: "long",
-            day: "numeric",
-            year: "numeric"
+    let timerSeconds = 25 * 60;
+    let timerInterval = null;
+    let selectedTaskId = null;
+    let bingoWon = false;
+
+    // Shortcuts for finding page elements.
+    const taskList = document.getElementById("taskList");
+    const emptyState = document.getElementById("emptyState");
+    const taskModal = document.getElementById("taskModal");
+
+    function saveTasks() {
+      localStorage.setItem("deadlineRadarTasks", JSON.stringify(tasks));
+    }
+
+    function getDaysLeft(dateString) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      const due = new Date(dateString + "T00:00:00");
+      due.setHours(0, 0, 0, 0);
+      return Math.round((due - today) / 86400000);
+    }
+
+    function getPriorityScore(task) {
+      const days = getDaysLeft(task.date);
+      let urgency = 10;
+
+      if (days < 0) urgency = 100;
+      else if (days === 0) urgency = 90;
+      else if (days === 1) urgency = 80;
+      else if (days <= 3) urgency = 65;
+      else if (days <= 7) urgency = 45;
+      else if (days <= 14) urgency = 25;
+
+      let importance = 10;
+      if (task.priority === "High") importance = 30;
+      if (task.priority === "Medium") importance = 20;
+
+      return urgency + importance;
+    }
+
+    function formatDueDate(dateString) {
+      const date = new Date(dateString + "T00:00:00");
+      return date.toLocaleDateString(undefined, { month: "short", day: "numeric" });
+    }
+
+    function dueLabel(task) {
+      const days = getDaysLeft(task.date);
+      if (days < 0) return Math.abs(days) + (days === -1 ? " day overdue" : " days overdue");
+      if (days === 0) return "Due today";
+      if (days === 1) return "Due tomorrow";
+      return "Due " + formatDueDate(task.date);
+    }
+
+    function showToast(message) {
+      const toast = document.getElementById("toast");
+      toast.textContent = message;
+      toast.classList.remove("hidden");
+      clearTimeout(showToast.timeout);
+      showToast.timeout = setTimeout(function() {
+        toast.classList.add("hidden");
+      }, 2600);
+    }
+
+    function openModal() {
+      taskModal.classList.remove("hidden");
+      taskModal.classList.add("flex");
+      document.getElementById("taskName").focus();
+    }
+
+    function closeModal() {
+      taskModal.classList.add("hidden");
+      taskModal.classList.remove("flex");
+      document.getElementById("taskForm").reset();
+      document.getElementById("taskMinutes").value = 60;
+      document.getElementById("formError").classList.add("hidden");
+    }
+
+    function addTask(event) {
+      event.preventDefault();
+
+      const name = document.getElementById("taskName").value.trim();
+      const course = document.getElementById("taskCourse").value.trim();
+      const date = document.getElementById("taskDate").value;
+      const priority = document.getElementById("taskPriority").value;
+      const minutes = Number(document.getElementById("taskMinutes").value);
+      const error = document.getElementById("formError");
+
+      if (!name || !date || !minutes || minutes < 5) {
+        error.textContent = "Please enter a name, due date, and estimate of at least 5 minutes.";
+        error.classList.remove("hidden");
+        return;
+      }
+
+      tasks.push({
+        id: Date.now(),
+        name: name,
+        course: course,
+        date: date,
+        priority: priority,
+        minutes: minutes,
+        done: false
+      });
+
+      saveTasks();
+      renderApp();
+      closeModal();
+      showToast("Assignment added to your radar.");
+    }
+
+    function toggleTask(id) {
+      tasks = tasks.map(function(task) {
+        if (task.id === id) task.done = !task.done;
+        return task;
+      });
+      saveTasks();
+      renderApp();
+      const task = tasks.find(function(item) { return item.id === id; });
+      if (task && task.done) {
+        markBingo(1);
+        showToast("Nice work. One more thing off your radar.");
+      }
+    }
+
+    function deleteTask(id) {
+      tasks = tasks.filter(function(task) { return task.id !== id; });
+      saveTasks();
+      renderApp();
+      showToast("Assignment removed.");
+    }
+
+    function renderTasks() {
+      const search = document.getElementById("searchInput").value.toLowerCase();
+      const filter = document.getElementById("filterSelect").value;
+
+      let visibleTasks = tasks.filter(function(task) {
+        const matchesSearch = task.name.toLowerCase().includes(search) || task.course.toLowerCase().includes(search);
+        const days = getDaysLeft(task.date);
+        let matchesFilter = true;
+
+        if (filter === "active") matchesFilter = !task.done;
+        if (filter === "completed") matchesFilter = task.done;
+        if (filter === "urgent") matchesFilter = !task.done && days <= 2;
+
+        return matchesSearch && matchesFilter;
+      });
+
+      visibleTasks.sort(function(a, b) {
+        if (a.done !== b.done) return a.done ? 1 : -1;
+        return getPriorityScore(b) - getPriorityScore(a);
+      });
+
+      taskList.innerHTML = "";
+
+      visibleTasks.forEach(function(task) {
+        const days = getDaysLeft(task.date);
+        const priorityColor = task.priority === "High" ? "bg-[#FCEBE5] text-[#A65336]" : task.priority === "Medium" ? "bg-[#F7F1DF] text-[#8A6A24]" : "bg-[#EDF1ED] text-[#65736A]";
+        const dueColor = !task.done && days <= 1 ? "text-[#B35D3C]" : "text-[#6F7B73]";
+        const article = document.createElement("article");
+        article.className = "task-row flex items-center gap-3 rounded-2xl border border-[#E5EAE3] bg-white p-4 shadow-[0_4px_18px_rgba(23,33,31,.025)] transition hover:border-[#C9D8CA] hover:shadow-soft";
+        article.innerHTML = `
+          <button class="task-check grid h-6 w-6 shrink-0 place-items-center rounded-full border ${task.done ? "border-forest bg-forest text-white" : "border-[#CCD6CD] bg-white text-transparent hover:border-forest"}" aria-label="${task.done ? "Mark incomplete" : "Mark complete"}">${task.done ? "✓" : "✓"}</button>
+          <div class="min-w-0 flex-1">
+            <div class="flex flex-wrap items-center gap-2">
+              <h3 class="truncate text-sm font-semibold ${task.done ? "text-[#9AA49D] line-through" : "text-ink"}">${escapeHTML(task.name)}</h3>
+              <span class="rounded-md px-2 py-1 text-[9px] font-bold ${priorityColor}">${task.priority}</span>
+            </div>
+            <div class="mt-1.5 flex flex-wrap items-center gap-x-3 gap-y-1 text-[10px] text-muted">
+              <span>${escapeHTML(task.course || "Personal")}</span>
+              <span>·</span><span class="${dueColor} font-semibold">${task.done ? "Completed" : dueLabel(task)}</span>
+              <span>·</span><span>${Math.round(task.minutes / 60 * 10) / 10}h estimate</span>
+            </div>
+          </div>
+          <button class="delete-task rounded-lg px-2 py-2 text-sm text-[#A4AEA6] transition hover:bg-[#FBEFEB] hover:text-[#A65336]" aria-label="Delete ${escapeHTML(task.name)}">×</button>
+        `;
+        article.querySelector(".task-check").addEventListener("click", function() { toggleTask(task.id); });
+        article.querySelector(".delete-task").addEventListener("click", function() { deleteTask(task.id); });
+        taskList.appendChild(article);
+      });
+
+      emptyState.classList.toggle("hidden", visibleTasks.length !== 0);
+    }
+
+    function escapeHTML(value) {
+      return String(value).replace(/[&<>"']/g, function(character) {
+        const replacements = { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#039;" };
+        return replacements[character];
+      });
+    }
+
+    function renderStats() {
+      const completed = tasks.filter(function(task) { return task.done; }).length;
+      const active = tasks.filter(function(task) { return !task.done; });
+      const urgent = active.filter(function(task) { return getDaysLeft(task.date) <= 1; }).length;
+      const minutes = active.reduce(function(total, task) { return total + task.minutes; }, 0);
+      const percent = tasks.length === 0 ? 0 : Math.round(completed / tasks.length * 100);
+
+      document.getElementById("totalCount").textContent = tasks.length;
+      document.getElementById("doneCount").textContent = completed;
+      document.getElementById("urgentCount").textContent = urgent;
+      document.getElementById("hoursCount").innerHTML = (minutes / 60).toFixed(1) + '<span class="ml-1 text-base font-semibold">h</span>';
+      document.getElementById("progressText").textContent = percent + "% complete";
+      document.getElementById("progressNumbers").textContent = completed + " / " + tasks.length + " done";
+      document.getElementById("progressBar").style.width = percent + "%";
+    }
+
+    function renderRecommendation() {
+      const active = tasks.filter(function(task) { return !task.done; });
+      active.sort(function(a, b) { return getPriorityScore(b) - getPriorityScore(a); });
+      const title = document.getElementById("nextTaskTitle");
+      const reason = document.getElementById("nextTaskReason");
+      const button = document.getElementById("focusNext");
+
+      if (active.length === 0) {
+        title.textContent = tasks.length ? "You cleared the radar." : "Your next move starts here.";
+        reason.textContent = tasks.length ? "Every assignment is complete. Take a breath. You earned it." : "Add an assignment and Radar will help you decide where to begin.";
+        selectedTaskId = null;
+        button.textContent = "Start a focus session ↗";
+        return;
+      }
+
+      const next = active[0];
+      selectedTaskId = next.id;
+      title.textContent = next.name;
+      reason.textContent = dueLabel(next) + " · " + next.priority + " priority · " + next.minutes + " minutes estimated. Start here to make the biggest difference.";
+      button.innerHTML = 'Focus on this task <span>↗</span>';
+    }
+
+    function renderApp() {
+      renderTasks();
+      renderStats();
+      renderRecommendation();
+      renderBingo();
+    }
+
+    // Bingo: check off a habit by clicking a square.
+    function saveBingo() {
+      localStorage.setItem("deadlineRadarBingo", JSON.stringify(bingoMarks));
+    }
+
+    function hasBingo() {
+      const lines = [
+        [0,1,2], [3,4,5], [6,7,8],
+        [0,3,6], [1,4,7], [2,5,8],
+        [0,4,8], [2,4,6]
+      ];
+      return lines.some(function(line) {
+        return line.every(function(index) { return bingoMarks[index]; });
+      });
+    }
+
+    function markBingo(index) {
+      if (index < 0 || index > 8) return;
+      bingoMarks[index] = true;
+      saveBingo();
+      renderBingo();
+    }
+
+    function renderBingo() {
+      const grid = document.getElementById("bingoGrid");
+      grid.innerHTML = "";
+      let marked = 0;
+
+      bingoChallenges.forEach(function(challenge, index) {
+        if (bingoMarks[index]) marked++;
+        const button = document.createElement("button");
+        button.className = "bingo-cell min-h-[91px] rounded-xl border border-[#E3E9E1] bg-[#FBFCFA] p-2 text-left " + (bingoMarks[index] ? "marked" : "text-[#68756D]");
+        button.innerHTML = `
+          <span class="bingo-dot mb-2 grid h-5 w-5 place-items-center rounded-full border border-[#D8E0D7] text-[9px] font-bold">${bingoMarks[index] ? "✓" : String(index + 1).padStart(2, "0")}</span>
+          <span class="block text-[10px] font-semibold leading-[1.35]">${challenge}</span>
+        `;
+        button.addEventListener("click", function() {
+          bingoMarks[index] = !bingoMarks[index];
+          saveBingo();
+          renderBingo();
+          if (hasBingo()) showToast("BINGO! You just made progress feel like a game.");
         });
+        grid.appendChild(button);
+      });
 
-    displayTimer();
+      document.getElementById("bingoProgress").textContent = marked + " / 9";
+      const message = document.getElementById("bingoMessage");
+      if (hasBingo()) {
+        message.innerHTML = '<strong class="text-forest">BINGO! That’s a full line.</strong><br>You’re building habits that make deadlines easier. Keep your streak alive.';
+      } else if (marked === 9) {
+        message.textContent = "Full card! You’ve completed every challenge. That’s a serious week.";
+      } else {
+        message.textContent = marked + " of 9 habits checked. " + (marked === 0 ? "Pick one small win and get started." : "You’re building momentum. Keep going.");
+      }
+    }
 
-    render();
+    // AI Reality Check: local writing feedback, not AI authorship detection.
+    function checkWriting() {
+      const text = document.getElementById("writingInput").value.trim();
+      const result = document.getElementById("writingResult");
 
-</script>
+      if (text.length < 35) {
+        result.classList.remove("hidden");
+        result.innerHTML = '<p class="font-semibold text-[#A65336]">A little more text, please.</p><p class="mt-1 text-[11px] leading-5 text-muted">Paste at least a few sentences so the checker has something useful to review.</p>';
+        return;
+      }
 
+      const lower = text.toLowerCase();
+      const patterns = [
+        { phrase: "in conclusion", advice: "Try ending with the specific point you want the reader to remember instead of a standard signpost." },
+        { phrase: "delve into", advice: "This phrase can sound generic. Consider a more direct verb that says exactly what you did." },
+        { phrase: "it is important to note", advice: "This opening often adds words without adding meaning. Try stating the point directly." },
+        { phrase: "plays a crucial role", advice: "Name what the subject actually does rather than relying on a broad phrase." },
+        { phrase: "in today's society", advice: "Be more specific about the time, place, group, or situation you mean." },
+        { phrase: "furthermore", advice: "Check whether the transition is needed. A clear connection between ideas may work better." },
+        { phrase: "moreover", advice: "Check whether the transition is needed. A clear connection between ideas may work better." },
+        { phrase: "landscape", advice: "If you mean an industry, environment, or situation, name it directly." },
+        { phrase: "tapestry", advice: "This metaphor can feel vague. Replace it with the concrete details you are describing." },
+        { phrase: "underscores the importance", advice: "Explain what the example shows instead of using a broad summary phrase." }
+      ];
+
+      const found = patterns.filter(function(item) { return lower.includes(item.phrase); });
+      const sentences = text.split(/[.!?]+/).filter(function(sentence) { return sentence.trim().length > 0; });
+      const words = text.split(/\s+/).filter(Boolean);
+      const longWords = words.filter(function(word) { return word.replace(/[^a-zA-Z]/g, "").length > 12; }).length;
+      const repeatedOpeners = sentences.length >= 3 && sentences.filter(function(sentence) {
+        return /^(this|these|the|it is|there are)\b/i.test(sentence.trim());
+      }).length >= Math.ceil(sentences.length * 0.6);
+
+      let feedback = [];
+      if (found.length > 0) {
+        feedback.push("A few phrases may sound generic. Try making them more specific.");
+      } else {
+        feedback.push("No common generic phrases from this checker’s small phrase list stood out.");
+      }
+      if (repeatedOpeners) feedback.push("Several sentences begin in a similar way. Vary the sentence openings.");
+      if (words.length > 35 && longWords / words.length > 0.12) feedback.push("There are quite a few long words. Check whether simpler wording would make your point clearer.");
+      if (sentences.length > 0 && sentences.length < 3) feedback.push("Consider whether one concrete example would help the reader understand your point.");
+
+      let html = '<div class="flex items-center justify-between gap-2"><p class="text-xs font-bold text-ink">Your writing check</p><span class="rounded-full bg-[#EAF1E9] px-2 py-1 text-[9px] font-bold text-forest">Feedback ready</span></div>';
+      html += '<ul class="mt-3 space-y-2">' + feedback.map(function(item) {
+        return '<li class="flex gap-2 text-[11px] leading-5 text-[#58665D]"><span class="mt-0.5 text-forest">•</span><span>' + escapeHTML(item) + '</span></li>';
+      }).join("") + '</ul>';
+
+      if (found.length > 0) {
+        html += '<div class="mt-3 border-t border-[#E2E9E0] pt-3"><p class="mono text-[9px] uppercase tracking-[.13em] text-muted">Phrases to reconsider</p>';
+        html += found.map(function(item) {
+          return '<div class="mt-2"><p class="text-[10px] font-bold text-[#A65336]">“' + escapeHTML(item.phrase) + '”</p><p class="text-[10px] leading-4 text-muted">' + escapeHTML(item.advice) + '</p></div>';
+        }).join("");
+        html += '</div>';
+      }
+
+      html += '<div class="mt-3 rounded-lg bg-white p-3"><p class="text-[10px] font-bold text-forest">Try this human-voice test</p><p class="mt-1 text-[10px] leading-4 text-[#68756D]">Can you add one detail only you would know: a class discussion, a specific observation, a decision you made, or why this matters to you?</p></div>';
+      result.innerHTML = html;
+      result.classList.remove("hidden");
+    }
+
+    // Focus timer.
+    function updateTimerDisplay() {
+      const minutes = Math.floor(timerSeconds / 60);
+      const seconds = timerSeconds % 60;
+      document.getElementById("timerDisplay").textContent = String(minutes).padStart(2, "0") + ":" + String(seconds).padStart(2, "0");
+    }
+
+    function stopTimer() {
+      clearInterval(timerInterval);
+      timerInterval = null;
+      document.getElementById("timerButton").textContent = "▶";
+    }
+
+    function startTimer() {
+      if (timerInterval) {
+        stopTimer();
+        return;
+      }
+      document.getElementById("timerButton").textContent = "Ⅱ";
+      timerInterval = setInterval(function() {
+        timerSeconds--;
+        updateTimerDisplay();
+        if (timerSeconds <= 0) {
+          stopTimer();
+          markBingo(2);
+          showToast("Session complete. Take a breath.");
+          alert("Focus session complete. Nice work!");
+        }
+      }, 1000);
+    }
+
+    function chooseTimer(minutes, mode, button) {
+      stopTimer();
+      timerSeconds = minutes * 60;
+      document.getElementById("timerMode").textContent = mode + (mode === "Focus" ? " session" : "");
+      updateTimerDisplay();
+      document.querySelectorAll(".timer-mode").forEach(function(item) {
+        item.className = "timer-mode rounded-full border border-[#C9D5C8] bg-white/70 px-3 py-2 text-[10px] font-semibold text-[#5E6C63]";
+      });
+      button.className = "timer-mode rounded-full bg-forest px-3 py-2 text-[10px] font-bold text-white";
+    }
+
+    // Page events.
+    document.getElementById("quickAdd").addEventListener("click", openModal);
+    document.getElementById("addAssignment").addEventListener("click", openModal);
+    document.getElementById("closeModal").addEventListener("click", closeModal);
+    document.getElementById("cancelModal").addEventListener("click", closeModal);
+    document.getElementById("taskForm").addEventListener("submit", addTask);
+    document.getElementById("searchInput").addEventListener("input", renderTasks);
+    document.getElementById("filterSelect").addEventListener("change", renderTasks);
+    document.getElementById("checkWriting").addEventListener("click", checkWriting);
+    document.getElementById("writingInput").addEventListener("input", function() {
+      const count = this.value.trim() ? this.value.trim().split(/\s+/).length : 0;
+      document.getElementById("wordCount").textContent = count + (count === 1 ? " word" : " words");
+    });
+    document.getElementById("timerButton").addEventListener("click", startTimer);
+    document.getElementById("timerReset").addEventListener("click", function() {
+      stopTimer();
+      const activeButton = document.querySelector(".timer-mode.bg-forest");
+      timerSeconds = Number(activeButton.dataset.minutes) * 60;
+      updateTimerDisplay();
+    });
+    document.querySelectorAll(".timer-mode").forEach(function(button) {
+      button.addEventListener("click", function() {
+        chooseTimer(Number(this.dataset.minutes), this.dataset.mode, this);
+      });
+    });
+    document.getElementById("focusNext").addEventListener("click", function() {
+      if (selectedTaskId !== null) {
+        const task = tasks.find(function(item) { return item.id === selectedTaskId; });
+        if (task) showToast("Focus on: " + task.name);
+      }
+      document.getElementById("timerMode").textContent = "Focus session";
+      chooseTimer(25, "Focus", document.querySelector('.timer-mode[data-mode="Focus"]'));
+      document.getElementById("timerDisplay").scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+    document.getElementById("resetBingo").addEventListener("click", function() {
+      if (confirm("Reset all nine Bingo squares?")) {
+        bingoMarks = Array(9).fill(false);
+        saveBingo();
+        renderBingo();
+        showToast("A fresh Bingo card. New week, new wins.");
+      }
+    });
+    taskModal.addEventListener("click", function(event) {
+      if (event.target === taskModal) closeModal();
+    });
+    document.addEventListener("keydown", function(event) {
+      if (event.key === "Escape") closeModal();
+    });
+
+    // Set the current date in the header.
+    document.getElementById("todayLabel").textContent = new Date().toLocaleDateString(undefined, { weekday: "long", month: "long", day: "numeric" });
+
+    renderApp();
+    updateTimerDisplay();
+  </script>
 </body>
 </html>
