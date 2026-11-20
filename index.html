@@ -1,0 +1,1316 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Deadline Radar</title>
+
+    <style>
+        /* GENERAL PAGE STYLING */
+
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            padding: 25px;
+            background: #11121d;
+            color: #f5f4fc;
+            font-family: Arial, sans-serif;
+        }
+
+        .container {
+            max-width: 1150px;
+            margin: auto;
+        }
+
+        /* HEADER */
+
+        header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 15px;
+            padding-bottom: 25px;
+            border-bottom: 1px solid #303247;
+        }
+
+        h1 {
+            margin: 0;
+            font-size: 27px;
+        }
+
+        h1 span {
+            color: #a58bff;
+        }
+
+        .subtitle {
+            color: #9295ad;
+            font-size: 13px;
+        }
+
+        .date {
+            color: #9295ad;
+            font-size: 13px;
+        }
+
+        /* MAIN INTRODUCTION */
+
+        .hero {
+            margin: 35px 0 25px;
+        }
+
+        .hero h2 {
+            font-size: 32px;
+            margin-bottom: 8px;
+        }
+
+        .hero p {
+            color: #9295ad;
+            font-size: 14px;
+        }
+
+        /* DASHBOARD STATISTICS */
+
+        .stats {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 18px;
+        }
+
+        .stat {
+            background: #1b1d2d;
+            border: 1px solid #303247;
+            border-radius: 12px;
+            padding: 20px;
+        }
+
+        .stat-title {
+            color: #9295ad;
+            font-size: 12px;
+        }
+
+        .stat-number {
+            font-size: 30px;
+            font-weight: bold;
+            margin-top: 12px;
+        }
+
+        .purple { color: #a58bff; }
+        .green { color: #63d9ad; }
+        .red { color: #ff788d; }
+        .yellow { color: #f4c879; }
+
+        /* GENERAL PANELS */
+
+        .panel {
+            background: #1b1d2d;
+            border: 1px solid #303247;
+            border-radius: 12px;
+            padding: 22px;
+            margin-bottom: 18px;
+        }
+
+        .panel h3 {
+            margin-top: 0;
+            font-size: 18px;
+        }
+
+        /* PROGRESS BAR */
+
+        .progress-header {
+            display: flex;
+            justify-content: space-between;
+            font-size: 13px;
+        }
+
+        .progress-track {
+            background: #303247;
+            height: 8px;
+            border-radius: 10px;
+            margin-top: 12px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            background: linear-gradient(90deg, #7959e9, #b49aff);
+            height: 100%;
+            width: 0%;
+            transition: width 0.3s;
+        }
+
+        /* TWO-COLUMN LAYOUT */
+
+        .main {
+            display: grid;
+            grid-template-columns: 1.5fr 1fr;
+            gap: 18px;
+            align-items: start;
+        }
+
+        /* FORM */
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        label {
+            display: block;
+            color: #9295ad;
+            font-size: 11px;
+            margin-bottom: 7px;
+        }
+
+        input, select {
+            width: 100%;
+            padding: 11px;
+            background: #25283c;
+            border: 1px solid #393d55;
+            border-radius: 7px;
+            color: white;
+            outline: none;
+        }
+
+        input:focus, select:focus {
+            border-color: #a58bff;
+        }
+
+        button {
+            cursor: pointer;
+            border: none;
+            border-radius: 7px;
+            padding: 11px 15px;
+            font-weight: bold;
+        }
+
+        .add-button {
+            grid-column: 1 / -1;
+            background: #8969ed;
+            color: white;
+        }
+
+        .add-button:hover {
+            background: #a58bff;
+        }
+
+        /* SEARCH AND FILTER */
+
+        .filters {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0 12px;
+        }
+
+        .filters input {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .filters select {
+            width: 125px;
+        }
+
+        /* ASSIGNMENT LIST */
+
+        .task {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            background: #25283c;
+            border: 1px solid #353950;
+            border-radius: 9px;
+            padding: 13px;
+            margin-top: 10px;
+        }
+
+        .task input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            accent-color: #a58bff;
+            cursor: pointer;
+        }
+
+        .task-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .task-name {
+            font-size: 13px;
+            font-weight: bold;
+            overflow-wrap: anywhere;
+        }
+
+        .task-details {
+            font-size: 11px;
+            color: #9295ad;
+            margin-top: 6px;
+        }
+
+        .task.done .task-name {
+            text-decoration: line-through;
+            color: #9295ad;
+        }
+
+        .priority {
+            display: inline-block;
+            padding: 4px 7px;
+            border-radius: 5px;
+            font-size: 10px;
+            margin-top: 6px;
+        }
+
+        .high {
+            color: #ff91a3;
+            background: #452b3b;
+        }
+
+        .medium {
+            color: #f4c879;
+            background: #403a2b;
+        }
+
+        .low {
+            color: #63d9ad;
+            background: #233c36;
+        }
+
+        .task-right {
+            text-align: right;
+        }
+
+        .due {
+            font-size: 10px;
+            margin-bottom: 8px;
+        }
+
+        .delete-button {
+            background: transparent;
+            color: #ff788d;
+            padding: 5px;
+        }
+
+        .empty {
+            color: #9295ad;
+            text-align: center;
+            padding: 25px 10px;
+            font-size: 13px;
+        }
+
+        /* FOCUS TIMER */
+
+        .timer-panel {
+            text-align: center;
+            background: radial-gradient(circle at top, #30284f, #1b1d2d 65%);
+        }
+
+        .timer-label {
+            color: #a58bff;
+            font-size: 11px;
+            letter-spacing: 2px;
+            font-weight: bold;
+        }
+
+        .timer {
+            font-size: 55px;
+            font-weight: bold;
+            margin: 22px 0;
+            font-variant-numeric: tabular-nums;
+        }
+
+        .timer-buttons {
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            gap: 8px;
+        }
+
+        .timer-buttons button {
+            background: #7959e9;
+            color: white;
+        }
+
+        .timer-buttons .secondary {
+            background: #303247;
+        }
+
+        .modes {
+            display: flex;
+            justify-content: center;
+            gap: 7px;
+            margin-top: 18px;
+            flex-wrap: wrap;
+        }
+
+        .mode-button {
+            background: #303247;
+            color: #b6b5c9;
+            font-size: 10px;
+        }
+
+        .mode-button.active {
+            background: #7959e9;
+            color: white;
+        }
+
+        /* RECOMMENDATION */
+
+        .recommendation {
+            background: #25283c;
+            padding: 15px;
+            border-radius: 9px;
+            font-size: 12px;
+            color: #c5c4d5;
+            line-height: 1.7;
+        }
+
+        .recommendation strong {
+            color: #a58bff;
+        }
+
+        footer {
+            color: #777b95;
+            text-align: center;
+            font-size: 11px;
+            margin-top: 30px;
+        }
+
+        /* MOBILE RESPONSIVENESS */
+
+        @media (max-width: 800px) {
+            .main {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 450px) {
+            body {
+                padding: 13px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+
+            .filters {
+                flex-wrap: wrap;
+            }
+
+            .filters input {
+                flex-basis: 100%;
+            }
+
+            .filters select {
+                flex: 1;
+            }
+
+            .hero h2 {
+                font-size: 25px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="container">
+
+    <!-- HEADER -->
+
+    <header>
+        <div>
+            <h1>DEADLINE <span>RADAR.</span></h1>
+            <div class="subtitle">Academic Command Center</div>
+        </div>
+
+        <div class="date" id="today"></div>
+    </header>
+
+    <!-- INTRODUCTION -->
+
+    <section class="hero">
+        <h2>Make every deadline count.</h2>
+        <p>Organize your assignments, prioritize your work, and stay focused.</p>
+    </section>
+
+    <!-- DASHBOARD STATISTICS -->
+
+    <section class="stats">
+
+        <div class="stat">
+            <div class="stat-title">TOTAL ASSIGNMENTS</div>
+            <div class="stat-number purple" id="total">0</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-title">COMPLETED</div>
+            <div class="stat-number green" id="completed">0</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-title">NEEDS ATTENTION</div>
+            <div class="stat-number red" id="urgent">0</div>
+        </div>
+
+        <div class="stat">
+            <div class="stat-title">HOURS REMAINING</div>
+            <div class="stat-number yellow" id="hours">0</div>
+        </div>
+
+    </section>
+
+    <!-- PROGRESS -->
+
+    <section class="panel">
+
+        <div class="progress-header">
+            <strong>Overall Progress</strong>
+            <span id="progressText">0% complete</span>
+        </div>
+
+        <div class="progress-track">
+            <div class="progress-fill" id="progress"></div>
+        </div>
+
+    </section>
+
+    <div class="main">
+
+        <!-- ASSIGNMENT MANAGER -->
+
+        <section class="panel">
+
+            <h3>Assignment Manager</h3>
+
+            <form id="taskForm">
+
+                <div class="form-grid">
+
+                    <div>
+                        <label for="taskName">ASSIGNMENT NAME</label>
+                        <input type="text" id="taskName"
+                            placeholder="Research paper..." maxlength="100" required>
+                    </div>
+
+                    <div>
+                        <label for="course">COURSE</label>
+                        <input type="text" id="course"
+                            placeholder="Computer Science" maxlength="45">
+                    </div>
+
+                    <div>
+                        <label for="dueDate">DEADLINE</label>
+                        <input type="date" id="dueDate" required>
+                    </div>
+
+                    <div>
+                        <label for="priority">IMPORTANCE</label>
+                        <select id="priority">
+                            <option value="High">High</option>
+                            <option value="Medium" selected>Medium</option>
+                            <option value="Low">Low</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="estimate">ESTIMATED TIME (MINUTES)</label>
+                        <input type="number" id="estimate"
+                            value="60" min="5" max="10000" required>
+                    </div>
+
+                    <button class="add-button" type="submit">
+                        + Add Assignment
+                    </button>
+
+                </div>
+
+            </form>
+
+            <!-- SEARCH AND FILTER -->
+
+            <div class="filters">
+
+                <input type="search" id="search"
+                    placeholder="Search assignments...">
+
+                <select id="filter">
+                    <option value="All">All tasks</option>
+                    <option value="Active">Active</option>
+                    <option value="Completed">Completed</option>
+                    <option value="Urgent">Urgent</option>
+                </select>
+
+            </div>
+
+            <div id="taskList"></div>
+
+        </section>
+
+        <!-- FOCUS TIMER AND RECOMMENDATION -->
+
+        <aside>
+
+            <section class="panel timer-panel">
+
+                <h3>Focus Studio</h3>
+
+                <div class="timer-label" id="timerLabel">
+                    FOCUS SESSION
+                </div>
+
+                <div class="timer" id="timer">25:00</div>
+
+                <div class="timer-buttons">
+                    <button id="start">Start</button>
+                    <button class="secondary" id="pause">Pause</button>
+                    <button class="secondary" id="reset">Reset</button>
+                </div>
+
+                <div class="modes">
+
+                    <button class="mode-button active"
+                        data-time="25" data-name="FOCUS SESSION">
+                        Focus 25m
+                    </button>
+
+                    <button class="mode-button"
+                        data-time="5" data-name="SHORT BREAK">
+                        Break 5m
+                    </button>
+
+                    <button class="mode-button"
+                        data-time="15" data-name="LONG BREAK">
+                        Break 15m
+                    </button>
+
+                </div>
+
+            </section>
+
+            <section class="panel">
+
+                <h3>Radar Intelligence</h3>
+
+                <div class="recommendation">
+                    <strong>NEXT BEST ACTION</strong>
+                    <p id="recommendation">
+                        Add an assignment to receive your first recommendation.
+                    </p>
+                </div>
+
+                <p class="subtitle">
+                    Deadline Radar automatically ranks your assignments
+                    using their deadlines and importance.
+                </p>
+
+            </section>
+
+        </aside>
+
+    </div>
+
+    <footer>
+        DEADLINE RADAR · PLAN SMARTER. FOCUS DEEPER.
+    </footer>
+
+</div>
+
+<script>
+
+    // =====================================
+    // 1. APPLICATION DATA
+    // =====================================
+
+    // This array stores all of our assignments.
+
+    let tasks = [];
+
+    // Load previously saved assignments.
+
+    try {
+        const savedTasks = JSON.parse(
+            localStorage.getItem("deadlineRadarTasks")
+        );
+
+        if (Array.isArray(savedTasks)) {
+            tasks = savedTasks.filter(task =>
+                task &&
+                typeof task.id === "number" &&
+                typeof task.name === "string" &&
+                typeof task.course === "string" &&
+                typeof task.date === "string" &&
+                getDaysLeft(task.date) !== null &&
+                ["High", "Medium", "Low"].includes(task.priority) &&
+                Number.isInteger(task.minutes) &&
+                task.minutes >= 5 &&
+                task.minutes <= 10000 &&
+                typeof task.done === "boolean"
+            );
+        }
+
+    } catch (error) {
+        tasks = [];
+    }
+
+
+    // =====================================
+    // 2. SAVE ASSIGNMENTS
+    // =====================================
+
+    function saveTasks() {
+
+        localStorage.setItem(
+            "deadlineRadarTasks",
+            JSON.stringify(tasks)
+        );
+
+    }
+
+
+    // =====================================
+    // 3. DATE CALCULATIONS
+    // =====================================
+
+    function getDaysLeft(dateString) {
+
+        const parts = dateString.split("-");
+
+        if (parts.length !== 3) {
+            return null;
+        }
+
+        const year = Number(parts[0]);
+        const month = Number(parts[1]);
+        const day = Number(parts[2]);
+
+        const dueDate = new Date(year, month - 1, day);
+
+        if (
+            dueDate.getFullYear() !== year ||
+            dueDate.getMonth() !== month - 1 ||
+            dueDate.getDate() !== day
+        ) {
+            return null;
+        }
+
+        const today = new Date();
+
+        const todayNumber = Date.UTC(
+            today.getFullYear(),
+            today.getMonth(),
+            today.getDate()
+        );
+
+        const dueNumber = Date.UTC(year, month - 1, day);
+
+        return Math.round(
+            (dueNumber - todayNumber) / 86400000
+        );
+
+    }
+
+
+    function getDeadlineText(date) {
+
+        const days = getDaysLeft(date);
+
+        if (days < 0) {
+            return Math.abs(days) + " days overdue";
+        }
+
+        if (days === 0) {
+            return "Due today";
+        }
+
+        if (days === 1) {
+            return "Due tomorrow";
+        }
+
+        return "Due in " + days + " days";
+
+    }
+
+
+    // =====================================
+    // 4. PRIORITY CALCULATION
+    // =====================================
+
+    function getScore(task) {
+
+        const days = getDaysLeft(task.date);
+
+        let urgency = 10;
+
+        if (days < 0) {
+            urgency = 100;
+        } else if (days === 0) {
+            urgency = 90;
+        } else if (days === 1) {
+            urgency = 80;
+        } else if (days <= 3) {
+            urgency = 65;
+        } else if (days <= 7) {
+            urgency = 45;
+        } else if (days <= 14) {
+            urgency = 25;
+        }
+
+        let importance = 10;
+
+        if (task.priority === "High") {
+            importance = 30;
+        } else if (task.priority === "Medium") {
+            importance = 20;
+        }
+
+        return urgency + importance;
+
+    }
+
+
+    // =====================================
+    // 5. UPDATE DASHBOARD
+    // =====================================
+
+    function render() {
+
+        let completed = 0;
+        let urgent = 0;
+        let remainingMinutes = 0;
+
+        // Count completed assignments and calculate workload.
+
+        for (let i = 0; i < tasks.length; i++) {
+
+            if (tasks[i].done) {
+                completed++;
+            } else {
+
+                remainingMinutes += tasks[i].minutes;
+
+                if (getDaysLeft(tasks[i].date) <= 2) {
+                    urgent++;
+                }
+
+            }
+
+        }
+
+        const total = tasks.length;
+
+        let percentage = 0;
+
+        if (total > 0) {
+            percentage = Math.round((completed / total) * 100);
+        }
+
+        // Update dashboard numbers.
+
+        document.getElementById("total").textContent = total;
+
+        document.getElementById("completed").textContent =
+            completed;
+
+        document.getElementById("urgent").textContent = urgent;
+
+        document.getElementById("hours").textContent =
+            (remainingMinutes / 60).toFixed(1);
+
+        document.getElementById("progressText").textContent =
+            percentage + "% complete";
+
+        document.getElementById("progress").style.width =
+            percentage + "%";
+
+        // Update the assignment list and recommendation.
+
+        renderTasks();
+        renderRecommendation();
+
+    }
+
+
+    // =====================================
+    // 6. DISPLAY ASSIGNMENTS
+    // =====================================
+
+    function renderTasks() {
+
+        const list = document.getElementById("taskList");
+
+        list.replaceChildren();
+
+        const search = document.getElementById("search")
+            .value.toLowerCase();
+
+        const filter = document.getElementById("filter").value;
+
+        // Create a separate array for displayed assignments.
+
+        let visibleTasks = [];
+
+        for (let i = 0; i < tasks.length; i++) {
+
+            const task = tasks[i];
+
+            // Search assignment names and courses.
+
+            const matchesSearch =
+                task.name.toLowerCase().includes(search) ||
+                task.course.toLowerCase().includes(search);
+
+            if (!matchesSearch) {
+                continue;
+            }
+
+            // Apply the selected filter.
+
+            if (filter === "Active" && task.done) {
+                continue;
+            }
+
+            if (filter === "Completed" && !task.done) {
+                continue;
+            }
+
+            if (filter === "Urgent" &&
+                (task.done || getDaysLeft(task.date) > 2)) {
+                continue;
+            }
+
+            visibleTasks.push(task);
+
+        }
+
+        // Sort assignments using their priority scores.
+
+        visibleTasks.sort(function(a, b) {
+
+            if (a.done !== b.done) {
+                return Number(a.done) - Number(b.done);
+            }
+
+            return getScore(b) - getScore(a);
+
+        });
+
+        // Display a message if there are no assignments.
+
+        if (visibleTasks.length === 0) {
+
+            const message = document.createElement("div");
+
+            message.className = "empty";
+
+            message.textContent = tasks.length === 0
+                ? "No assignments yet. Add your first assignment above!"
+                : "No assignments match your search.";
+
+            list.appendChild(message);
+
+            return;
+
+        }
+
+        // Create an HTML element for each assignment.
+
+        for (let i = 0; i < visibleTasks.length; i++) {
+
+            const task = visibleTasks[i];
+
+            const item = document.createElement("div");
+
+            item.className = "task";
+
+            if (task.done) {
+                item.classList.add("done");
+            }
+
+            // Checkbox for completing assignments.
+
+            const checkbox = document.createElement("input");
+
+            checkbox.type = "checkbox";
+            checkbox.checked = task.done;
+            checkbox.setAttribute("aria-label", "Complete " + task.name);
+
+            checkbox.addEventListener("change", function() {
+
+                task.done = checkbox.checked;
+
+                saveTasks();
+                render();
+
+            });
+
+            // Assignment information.
+
+            const info = document.createElement("div");
+
+            info.className = "task-info";
+
+            const name = document.createElement("div");
+
+            name.className = "task-name";
+            name.textContent = task.name;
+
+            const details = document.createElement("div");
+
+            details.className = "task-details";
+
+            details.textContent =
+                (task.course || "General") +
+                " · " + task.minutes + " min";
+
+            const priority = document.createElement("span");
+
+            priority.className =
+                "priority " + task.priority.toLowerCase();
+
+            priority.textContent = task.priority;
+
+            info.appendChild(name);
+            info.appendChild(details);
+            info.appendChild(priority);
+
+            // Deadline and delete button.
+
+            const right = document.createElement("div");
+
+            right.className = "task-right";
+
+            const due = document.createElement("div");
+
+            due.className = "due";
+            due.textContent = getDeadlineText(task.date);
+
+            if (!task.done && getDaysLeft(task.date) < 0) {
+                due.style.color = "#ff788d";
+            } else if (!task.done && getDaysLeft(task.date) <= 2) {
+                due.style.color = "#f4c879";
+            }
+
+            const deleteButton = document.createElement("button");
+
+            deleteButton.className = "delete-button";
+            deleteButton.textContent = "Delete";
+
+            deleteButton.addEventListener("click", function() {
+
+                if (confirm("Delete this assignment?")) {
+
+                    tasks = tasks.filter(function(t) {
+                        return t.id !== task.id;
+                    });
+
+                    saveTasks();
+                    render();
+
+                }
+
+            });
+
+            right.appendChild(due);
+            right.appendChild(deleteButton);
+
+            // Put everything together.
+
+            item.appendChild(checkbox);
+            item.appendChild(info);
+            item.appendChild(right);
+
+            list.appendChild(item);
+
+        }
+
+    }
+
+
+    // =====================================
+    // 7. ADD A NEW ASSIGNMENT
+    // =====================================
+
+    document.getElementById("taskForm")
+        .addEventListener("submit", function(event) {
+
+            event.preventDefault();
+
+            const name = document.getElementById("taskName")
+                .value.trim();
+
+            const course = document.getElementById("course")
+                .value.trim();
+
+            const date = document.getElementById("dueDate").value;
+
+            const priority = document.getElementById("priority").value;
+
+            const minutes = Number(
+                document.getElementById("estimate").value
+            );
+
+            if (!name || getDaysLeft(date) === null) {
+                alert("Please enter a valid assignment and deadline.");
+                return;
+            }
+
+            if (
+                !Number.isInteger(minutes) ||
+                minutes < 5 ||
+                minutes > 10000
+            ) {
+                alert("Please enter an estimate between 5 and 10,000 minutes.");
+                return;
+            }
+
+            // Ask before adding an overdue assignment.
+
+            if (getDaysLeft(date) < 0) {
+
+                if (!confirm("This deadline is in the past. Add it anyway?")) {
+                    return;
+                }
+
+            }
+
+            // Create a new assignment object.
+
+            const newTask = {
+
+                id: Date.now(),
+
+                name: name,
+
+                course: course,
+
+                date: date,
+
+                priority: priority,
+
+                minutes: minutes,
+
+                done: false
+
+            };
+
+            tasks.push(newTask);
+
+            saveTasks();
+
+            // Clear the form.
+
+            document.getElementById("taskForm").reset();
+
+            document.getElementById("priority").value = "Medium";
+
+            document.getElementById("estimate").value = 60;
+
+            render();
+
+        });
+
+
+    // =====================================
+    // 8. SEARCH AND FILTER
+    // =====================================
+
+    document.getElementById("search")
+        .addEventListener("input", renderTasks);
+
+    document.getElementById("filter")
+        .addEventListener("change", renderTasks);
+
+
+    // =====================================
+    // 9. SMART RECOMMENDATION
+    // =====================================
+
+    function renderRecommendation() {
+
+        const activeTasks = tasks.filter(function(task) {
+            return !task.done;
+        });
+
+        activeTasks.sort(function(a, b) {
+            return getScore(b) - getScore(a);
+        });
+
+        const output = document.getElementById("recommendation");
+
+        if (activeTasks.length === 0) {
+
+            output.textContent = tasks.length === 0
+                ? "Add an assignment to receive your first recommendation."
+                : "All assignments completed! Great work.";
+
+            return;
+
+        }
+
+        const nextTask = activeTasks[0];
+
+        output.textContent =
+            'Your next priority is "' + nextTask.name +
+            '". It is ' + getDeadlineText(nextTask.date) +
+            ' and has ' + nextTask.priority.toLowerCase() +
+            ' importance. Estimated work: ' + nextTask.minutes + ' minutes.';
+
+    }
+
+
+    // =====================================
+    // 10. FOCUS TIMER
+    // =====================================
+
+    let remainingSeconds = 25 * 60;
+
+    let timerInterval = null;
+
+    let timerMode = "FOCUS SESSION";
+
+    function displayTimer() {
+
+        const minutes = Math.floor(remainingSeconds / 60);
+
+        const seconds = remainingSeconds % 60;
+
+        document.getElementById("timer").textContent =
+
+            String(minutes).padStart(2, "0") + ":" +
+
+            String(seconds).padStart(2, "0");
+
+    }
+
+    // Start the timer.
+
+    document.getElementById("start")
+        .addEventListener("click", function() {
+
+            if (timerInterval !== null || remainingSeconds <= 0) {
+                return;
+            }
+
+            timerInterval = setInterval(function() {
+
+                remainingSeconds--;
+
+                displayTimer();
+
+                if (remainingSeconds <= 0) {
+
+                    clearInterval(timerInterval);
+
+                    timerInterval = null;
+
+                    alert(timerMode + " complete!");
+
+                }
+
+            }, 1000);
+
+        });
+
+
+    // Pause the timer.
+
+    document.getElementById("pause")
+        .addEventListener("click", function() {
+
+            clearInterval(timerInterval);
+
+            timerInterval = null;
+
+        });
+
+
+    // Reset the timer.
+
+    document.getElementById("reset")
+        .addEventListener("click", function() {
+
+            clearInterval(timerInterval);
+
+            timerInterval = null;
+
+            if (timerMode === "FOCUS SESSION") {
+                remainingSeconds = 25 * 60;
+            } else if (timerMode === "SHORT BREAK") {
+                remainingSeconds = 5 * 60;
+            } else {
+                remainingSeconds = 15 * 60;
+            }
+
+            displayTimer();
+
+        });
+
+
+    // Switch between timer modes.
+
+    const modeButtons = document.querySelectorAll(".mode-button");
+
+    modeButtons.forEach(function(button) {
+
+        button.addEventListener("click", function() {
+
+            clearInterval(timerInterval);
+
+            timerInterval = null;
+
+            const minutes = Number(button.dataset.time);
+
+            timerMode = button.dataset.name;
+
+            remainingSeconds = minutes * 60;
+
+            modeButtons.forEach(function(otherButton) {
+                otherButton.classList.remove("active");
+            });
+
+            button.classList.add("active");
+
+            document.getElementById("timerLabel").textContent =
+                timerMode;
+
+            displayTimer();
+
+        });
+
+    });
+
+
+    // =====================================
+    // 11. INITIALIZE THE APPLICATION
+    // =====================================
+
+    document.getElementById("today").textContent =
+        new Date().toLocaleDateString("en-US", {
+            weekday: "long",
+            month: "long",
+            day: "numeric",
+            year: "numeric"
+        });
+
+    displayTimer();
+
+    render();
+
+</script>
+
+</body>
+</html>
