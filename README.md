@@ -1,6 +1,7 @@
 # Deadline Radar
 
 **A student productivity dashboard that helps you organize assignments, prioritize deadlines, and build better study habits.**
+**AI may have aided in part(s) of the development process. This disclosure is required and provided for transparency.
 
 Deadline Radar brings academic planning and productivity tools together in one place. It helps students see what needs attention, decide what to work on next, and stay motivated along the way.
 
